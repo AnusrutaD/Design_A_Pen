@@ -350,6 +350,7 @@ classDiagram
 
     Pen "*" --o "1" WritingStrategy
 ```
+---
 
 ## 💬 Interviewer Feedback
 
@@ -360,3 +361,183 @@ classDiagram
 
 - **Object Creation Getting Difficult**  
   As the number of dependencies like `Ink`, `Nib`, `Refile`, and `WritingStrategy` increases, object instantiation is becoming complex. Consider introducing a builder or factory pattern to simplify and centralize object creation.
+
+---
+
+## 🔧 Design Improvements
+
+To address the feedback regarding **code duplication** and **complex object creation**, the following design patterns will be implemented:
+
+### 🧱 Builder Pattern
+- **Purpose:** Manage complex object construction (e.g., `Fountain`, `Marker`, `Refile`) where multiple components like `Ink`, `Nib`, and `WritingStrategy` are involved.
+- **Benefits:**
+  - Simplifies object creation
+  - Avoids constructor overloading
+  - Increases code readability and maintainability
+
+### 🏭 Abstract Factory Pattern
+- **Purpose:** Encapsulate the creation logic of different `Pen` types (`Gel`, `Ball`, `Fountain`, `Marker`).
+- **Benefits:**
+  - Reduces code duplication
+  - Follows Open/Closed Principle
+  - Centralizes instantiation logic for better scalability
+
+---
+
+## 📐 Class Diagram (Version 3)
+
+```mermaid
+classDiagram
+    class Pen {
+        <<builder>>
+        - brand: String
+        - name: String
+        - price: Double
+        + write()* void
+    }
+    class Gel{
+        <<builder>>
+        - refile: Refile
+        + write() void
+        + changeRefil(Refile) void
+    }
+    class Ball{
+        <<builder>>
+        - refile: Refile
+        + write() void
+        + changeRefil(Refile) void
+    }
+    class Fountain{
+        <<builder>>
+        - ink: Ink
+        - nib: Nib
+        + write() void
+    }
+    class Marker{
+        <<builder>>
+        - ink: Ink
+        - nib: Nib
+        + write() void
+    }
+    
+    Pen <|-- Gel
+    Pen <|-- Ball
+    Pen <|-- Fountain
+    Pen <|-- Marker
+    
+    class Refillable{
+        <<interface>>
+        + changeRefil(Refile)* void
+    }
+    Refillable <|-- Gel
+    Refillable <|-- Ball
+
+    class Refile {
+      <<builder>>
+        - brand: String
+        - name: String
+        - price: Double
+        - ink: Ink
+        - nib: Nib
+        - type: RefileType
+    }
+
+    class RefileType {
+        <<enumeration>>
+        GEL
+        BALL
+    }
+
+    Refile "*" --o "1" RefileType
+    Gel "1" --* "1" Refile
+    Ball "1" --* "1" Refile
+
+    class Ink {
+      <<builder>>
+        - brand: String
+        - colour: String
+        - type: InkType
+    }
+
+    class InkType {
+        <<enumeration>>
+        OIL
+        WATER
+    }
+
+    Ink "*" --o "1" InkType
+    Fountain "1" --* "1" Ink
+    Marker "1" --* "1" Ink
+    Refile "1" --* "1" Ink
+
+    class Nib {
+      <<builder>>
+        - brand: String
+        - radius: Double
+        - type: NibType
+    }
+
+    class NibType {
+        <<enumeration>>
+        GOLD
+        SILVER
+        PLASTIC
+    }
+
+    Nib "*" --o "1" NibType
+    Fountain "1" --* "1" Nib
+    Marker "1" --* "1" Nib
+    Refile "1" --* "1" Nib
+    
+    class WritingStrategy{
+        <<interface>>
+        + write()* void
+    }
+    
+    class Smooth{
+        + write() void
+    }
+    
+    class Rough{
+        + write() void
+    }
+
+    WritingStrategy <|-- Smooth
+    WritingStrategy <|-- Rough
+
+    Pen "*" --o "1" WritingStrategy
+    
+    class PenFactory{
+        <<interface>>
+        + createPen()$ Pen
+    }
+        
+```
+
+```mermaid
+classDiagram
+  class GelPenFactory{
+    + createPen()* Gel
+  }
+  class BallPenFactory{
+    + createPen() Ball
+  }
+  class FountainPenFactory{
+    + createPen() Fountain
+  }
+  class MarkerPenFactory{
+    + createPen() Marker
+  }
+
+  class RefileFactory{
+    + createRefile() Refile
+  }
+
+  class InkFactory{
+    + createInk() Ink
+  }
+
+  class NibFactory{
+    + createNib() Nib
+  }
+```
