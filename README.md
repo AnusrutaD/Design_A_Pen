@@ -169,3 +169,38 @@ classDiagram
     Nib "*" --o "1" NibType
     Pen "1" --* "1" Nib
     Refile "1" --* "1" Nib
+```
+
+---
+
+## 🧠 Interview Feedback
+
+### ✅ Overall Impression:
+You're thinking in the right direction — identifying entities, attributes, and including a class diagram. This shows you're comfortable with system modeling and abstraction.
+
+---
+
+### ⚠️ Areas of Concern & Immediate Improvement:
+
+#### 1. **Single Responsibility Principle (SRP)**
+- The `Pen` class currently takes on too many responsibilities (e.g., ink handling, refill logic, nib configuration, and writing behavior).
+- This violates SRP and makes the class harder to modify or test independently.
+
+#### 2. **Open/Closed Principle (OCP)**
+- The system is not easily extendable.
+- Adding new types of pens requires modifying existing logic in `Pen`, which violates OCP.
+
+#### 3. **Liskov Substitution Principle (LSP)**
+- Treating all pens as if they support both refill and ink equally can result in invalid substitutions.
+- For example, a `FountainPen` should not be expected to behave like a `GelPen` that uses a refill.
+
+---
+
+### 🧩 Design Behavior Missing
+- The current design doesn’t clearly define **how** each pen "writes differently".
+- Extracting `writeBehavior` into separate strategies or interfaces could better model this behavior and align with polymorphism.
+
+---
+
+### 📌 Final Note:
+Solid grasp of object modeling, but immediate focus should be on refining your design for SRP, LSP, and OCP adherence.
