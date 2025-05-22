@@ -349,8 +349,14 @@ classDiagram
     WritingStrategy <|-- Rough
 
     Pen "*" --o "1" WritingStrategy
-    Ball "*" --o "1" Rough
-    Gel "*" --o "1" Smooth
-    Fountain "*" --o "1" Smooth
-    Marker "*" --o "1" Rough
 ```
+
+## 💬 Interviewer Feedback
+
+### 🔍 Design Improvements Needed
+
+- **Code Duplication**  
+  There is duplicated logic across `Ball` and `Gel` classes—especially around `refile` and `changeRefil()`. This violates the DRY (Don't Repeat Yourself) principle and could be abstracted into a shared parent or utility.
+
+- **Object Creation Getting Difficult**  
+  As the number of dependencies like `Ink`, `Nib`, `Refile`, and `WritingStrategy` increases, object instantiation is becoming complex. Consider introducing a builder or factory pattern to simplify and centralize object creation.
