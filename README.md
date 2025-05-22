@@ -204,3 +204,153 @@ You're thinking in the right direction — identifying entities, attributes, and
 
 ### 📌 Final Note:
 Solid grasp of object modeling, but immediate focus should be on refining your design for SRP, LSP, and OCP adherence.
+
+---
+
+## 🔧 My Improvements
+
+### 1. Use Abstract Class for `Pen`
+- Define `Pen` as an abstract class.
+- Create concrete subclasses for each pen type:
+    - `BallPen`
+    - `GelPen`
+    - `FountainPen`
+    - `MarkerPen`
+
+### 2. Move Attributes to Appropriate Subclasses
+- Move `refile` to `BallPen` and `GelPen` only.
+- Move `ink` and `nib` to `FountainPen` and `MarkerPen`.
+
+### 3. Introduce `Refillable` Interface
+- Create a `Refillable` interface with a method `changeRefill()`.
+- Let `BallPen` and `GelPen` implement `Refillable`.
+
+### 4. Apply Strategy Design Pattern for Writing Behavior
+- Create a `WritingStrategy` interface with a method like `write()`.
+- Implement two strategies:
+    - `SmoothWritingStrategy`
+    - `RoughWritingStrategy`
+- Each pen will have a `WritingStrategy` instance to delegate writing behavior.
+
+---
+
+## 📐 Class Diagram (Version 1)
+
+```mermaid
+classDiagram
+    class Pen {
+        <<abstract>>
+        - brand: String
+        - name: String
+        - price: Double
+        + write()* void
+    }
+    class Gel{
+        - refile: Refile
+        + write() void
+        + changeRefil(Refile) void
+    }
+    class Ball{
+        - refile: Refile
+        + write() void
+        + changeRefil(Refile) void
+    }
+    class Fountain{
+        - ink: Ink
+        - nib: Nib
+        + write() void
+    }
+    class Marker{
+        - ink: Ink
+        - nib: Nib
+        + write() void
+    }
+    
+    Pen <|-- Gel
+    Pen <|-- Ball
+    Pen <|-- Fountain
+    Pen <|-- Marker
+    
+    class Refillable{
+        <<interface>>
+        + changeRefil(Refile)* void
+    }
+    Refillable <|-- Gel
+    Refillable <|-- Ball
+
+    class Refile {
+        - brand: String
+        - name: String
+        - price: Double
+        - ink: Ink
+        - nib: Nib
+        - type: RefileType
+    }
+
+    class RefileType {
+        <<enumeration>>
+        GEL
+        BALL
+    }
+
+    Refile "*" --o "1" RefileType
+    Gel "1" --* "1" Refile
+    Ball "1" --* "1" Refile
+
+    class Ink {
+        - brand: String
+        - colour: String
+        - type: InkType
+    }
+
+    class InkType {
+        <<enumeration>>
+        OIL
+        WATER
+    }
+
+    Ink "*" --o "1" InkType
+    Fountain "1" --* "1" Ink
+    Marker "1" --* "1" Ink
+    Refile "1" --* "1" Ink
+
+    class Nib {
+        - brand: String
+        - radius: Double
+        - type: NibType
+    }
+
+    class NibType {
+        <<enumeration>>
+        GOLD
+        SILVER
+        PLASTIC
+    }
+
+    Nib "*" --o "1" NibType
+    Fountain "1" --* "1" Nib
+    Marker "1" --* "1" Nib
+    Refile "1" --* "1" Nib
+    
+    class WritingStrategy{
+        <<interface>>
+        + write()* void
+    }
+    
+    class Smooth{
+        + write() void
+    }
+    
+    class Rough{
+        + write() void
+    }
+
+    WritingStrategy <|-- Smooth
+    WritingStrategy <|-- Rough
+
+    Pen "*" --o "1" WritingStrategy
+    Ball "*" --o "1" Rough
+    Gel "*" --o "1" Smooth
+    Fountain "*" --o "1" Smooth
+    Marker "*" --o "1" Rough
+```
