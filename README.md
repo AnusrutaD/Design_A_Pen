@@ -173,7 +173,7 @@ classDiagram
 
 ---
 
-## 🧠 Interview Feedback
+## 🧠 Interviewer Feedback
 
 ### ✅ Overall Impression:
 You're thinking in the right direction — identifying entities, attributes, and including a class diagram. This shows you're comfortable with system modeling and abstraction.
