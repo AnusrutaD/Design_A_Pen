@@ -234,7 +234,7 @@ Solid grasp of object modeling, but immediate focus should be on refining your d
 
 ---
 
-## 📐 Class Diagram (Version 1)
+## 📐 Class Diagram (Version 2)
 
 ```mermaid
 classDiagram
